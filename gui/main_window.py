@@ -114,7 +114,9 @@ class MainWindow(QtWidgets.QMainWindow):
         for code, data in UI_LANGUAGES.items():
             self.__ui.program_language_comboBox.addItem(data['label'], code)
         saved_language = self.__normalize_ui_language_code(self.__settings.get_app_language())
-        index = self.__ui.program_language_comboBox.findData(saved_language)
+        language_code = saved_language if self.__settings.has_valid_app_language() else self.__detect_ui_language()
+        language_code = self.__normalize_ui_language_code(language_code)
+        index = self.__ui.program_language_comboBox.findData(language_code)
         self.__ui.program_language_comboBox.setCurrentIndex(index if index != -1 else 0)
         self.__change_language()
 
@@ -126,6 +128,15 @@ class MainWindow(QtWidgets.QMainWindow):
             normalized = value.lower()
             if normalized.startswith('it') or 'ital' in normalized:
                 return 'it'
+        return 'en'
+
+    @staticmethod
+    def __detect_ui_language():
+        system_locale = QtCore.QLocale.system()
+        if system_locale.language() == QtCore.QLocale.Italian:
+            return 'it'
+        if system_locale.name().lower().startswith('it'):
+            return 'it'
         return 'en'
 
     @staticmethod
