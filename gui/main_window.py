@@ -27,8 +27,17 @@ from utils.gui.info_utils import AddInfoIcons
 SETTINGS_SHORTCUT = QtGui.QKeySequence('Ctrl+,')
 
 UI_LANGUAGES = {
-    'en': {'label': 'English', 'translation_dir': 'English'},
-    'it': {'label': 'Italiano', 'translation_dir': 'Italiano'},
+    'en': {'label': 'English', 'translation_dir': None},
+    'it': {'label': 'Italiano', 'translation_dir': 'it'},
+}
+
+UI_TRANSLATION_FILES = {
+    'it': [
+        'main_window_it.qm',
+        'constants_it.qm',
+        'settings_window_it.qm',
+        'stat_table_window_it.qm',
+    ]
 }
 
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
@@ -142,9 +151,25 @@ class MainWindow(QtWidgets.QMainWindow):
     @staticmethod
     def __get_translation_directory(language_code: str):
         language = UI_LANGUAGES.get(language_code)
-        if language:
+        if language and language.get('translation_dir'):
             return TRANSLATIONS_DIR / language['translation_dir']
         return None
+
+    def __load_ui_translators(self, language_code: str):
+        translation_dir = self.__get_translation_directory(language_code)
+        if not translation_dir or not translation_dir.exists():
+            logger.warning(f'UI translation directory missing for language {language_code}: {translation_dir}')
+            return
+        for file_name in UI_TRANSLATION_FILES.get(language_code, []):
+            file_path = translation_dir / file_name
+            if not file_path.exists():
+                logger.warning(f'UI translation file missing: {file_path}')
+                continue
+            translator = QtCore.QTranslator()
+            if translator.load(str(file_path)):
+                self.__translators.append(translator)
+            else:
+                logger.warning(f'Failed to load UI translator: {file_path}')
 
     @logger.catch()
     def __init_game(self):
@@ -278,13 +303,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__settings.set_app_language(language_code)
 
         self.__translators.clear()
-        translation_dir = self.__get_translation_directory(language_code)
-        if translation_dir and translation_dir.exists():
-            for file in translation_dir.iterdir():
-                if file.is_file():
-                    translator = QtCore.QTranslator()
-                    translator.load(str(file))
-                    self.__translators.append(translator)
+        if language_code in UI_TRANSLATION_FILES:
+            self.__load_ui_translators(language_code)
             if self.__translators:
                 set_translators()
         self.__ui.retranslateUi(self)
