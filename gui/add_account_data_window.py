@@ -3,6 +3,7 @@ from deep_translator.exceptions import ServerException
 from deepl import AuthorizationException
 from loguru import logger
 
+from gui.a11y_keyboard import add_shortcut, apply_tab_order, set_focus_policies
 from gui.dialog_window import CustomDialog
 from gui.window_ui.AddAccountData import Ui_Dialog
 from main import TranslatorAccount
@@ -17,6 +18,7 @@ class AddAccountDataWindow(QtWidgets.QDialog):
         super(AddAccountDataWindow, self).__init__(parent=parent)
         self.__ui = Ui_Dialog()
         self.__ui.setupUi(self)
+        self.__shortcuts: list[QtWidgets.QShortcut] = []
         if title:
             self.setWindowTitle(title)
         if icon:
@@ -30,9 +32,28 @@ class AddAccountDataWindow(QtWidgets.QDialog):
         self.__validate_key()
 
         self.__change_icon()
+        self.__init_keyboard_nav()
+        self.__init_shortcuts()
 
         self.__ui.api_key_lineEdit.editingFinished.connect(self.__validate_key)
         self.__ui.save_pushButton.clicked.connect(self.__save_key)
+
+    def __init_keyboard_nav(self):
+        focus_widgets = [
+            self.__ui.api_key_lineEdit,
+            self.__ui.save_pushButton,
+        ]
+        no_focus_widgets = [self.__ui.api_key_label]
+        set_focus_policies(focus_widgets, no_focus_widgets)
+        apply_tab_order(focus_widgets)
+        self.__ui.api_key_lineEdit.setFocus()
+
+    def __init_shortcuts(self):
+        self.__shortcuts = [
+            add_shortcut(self, 'Esc', self.close, context=QtCore.Qt.WidgetWithChildrenShortcut),
+            add_shortcut(self, 'Return', self.__ui.save_pushButton.click,
+                         context=QtCore.Qt.WidgetWithChildrenShortcut),
+        ]
 
     def __change_icon(self):
         if self.__key_validation:
