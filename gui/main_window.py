@@ -100,6 +100,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__check_readiness()
         self.__init_keyboard_nav()
         self.__init_shortcuts()
+        self.__init_accessibility_texts()
 
     @logger.catch()
     def __init_languages(self):
@@ -261,6 +262,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__ui.program_version_label.setText(f'{LanguageConstants.program_version} {PROGRAM_VERSION}')
         self.__init_help_icons()
         self.__init_menubar()
+        self.__init_accessibility_texts()
 
     def __init_info_layouts(self):
         layouts = {
@@ -278,6 +280,71 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init_help_icons(self):
         self.__init_info_layouts()
         AddInfoIcons(self.info_layouts)
+
+    def __init_accessibility_texts(self):
+        self.__ui.program_language_comboBox.setAccessibleName("UI language")
+        self.__ui.program_language_comboBox.setAccessibleDescription("Select the language of the application interface.")
+
+        self.__ui.select_game_comboBox.setAccessibleName("Game")
+        self.__ui.select_game_comboBox.setAccessibleDescription("Select the Paradox game you are translating/modding for.")
+
+        self.__ui.game_directory_lineEdit.setAccessibleName("Game localization folder")
+        self.__ui.game_directory_lineEdit.setAccessibleDescription("Path to the game's localization folder (contains english, russian, etc.).")
+        self.__ui.game_directory_pushButton.setAccessibleName("Browse game localization folder")
+        self.__ui.game_directory_pushButton.setAccessibleDescription("Open a folder picker to select the game's localization folder.")
+        self.__ui.game_directory_open_pushButton.setAccessibleName("Open game localization folder")
+        self.__ui.game_directory_open_pushButton.setAccessibleDescription("Open the game localization folder in the file explorer.")
+
+        self.__ui.original_directory_lineEdit.setAccessibleName("Mod localization folder")
+        self.__ui.original_directory_lineEdit.setAccessibleDescription("Path to the original mod localization folder (source files).")
+        self.__ui.original_directory_pushButton.setAccessibleName("Browse mod localization folder")
+        self.__ui.original_directory_pushButton.setAccessibleDescription("Open a folder picker to select the original mod localization folder.")
+        self.__ui.original_directory_open_pushButton.setAccessibleName("Open mod localization folder")
+        self.__ui.original_directory_open_pushButton.setAccessibleDescription("Open the original mod localization folder in the file explorer.")
+
+        self.__ui.previous_directory_lineEdit.setAccessibleName("Previous translation folder")
+        self.__ui.previous_directory_lineEdit.setAccessibleDescription("Optional. Path to a previous translation version to reuse already translated lines.")
+        self.__ui.previous_directory_pushButton.setAccessibleName("Browse previous translation folder")
+        self.__ui.previous_directory_pushButton.setAccessibleDescription("Open a folder picker to select the previous translation folder.")
+        self.__ui.previous_directory_open_pushButton.setAccessibleName("Open previous translation folder")
+        self.__ui.previous_directory_open_pushButton.setAccessibleDescription("Open the previous translation folder in the file explorer.")
+
+        self.__ui.target_directory_lineEdit.setAccessibleName("Output folder")
+        self.__ui.target_directory_lineEdit.setAccessibleDescription("Output folder where generated localization files will be saved.")
+        self.__ui.target_directory_pushButton.setAccessibleName("Browse output folder")
+        self.__ui.target_directory_pushButton.setAccessibleDescription("Open a folder picker to select the output folder.")
+        self.__ui.target_directory_open_pushButton.setAccessibleName("Open output folder")
+        self.__ui.target_directory_open_pushButton.setAccessibleDescription("Open the output folder in the file explorer.")
+
+        self.__ui.selector_original_language_comboBox.setAccessibleName("Source language")
+        self.__ui.selector_original_language_comboBox.setAccessibleDescription("Language of the original strings to process (e.g., english).")
+        self.__ui.selector_target_language_comboBox.setAccessibleName("Target language")
+        self.__ui.selector_target_language_comboBox.setAccessibleDescription("Language for the translated output (e.g., italian).")
+        self.__ui.selector_game_supported_source_language_comboBox.setAccessibleName("Mod source language folder")
+        self.__ui.selector_game_supported_source_language_comboBox.setAccessibleDescription("Language subfolder inside the mod localization directory used as source.")
+        self.__ui.selector_game_supported_target_language_comboBox.setAccessibleName("Mod target language folder")
+        self.__ui.selector_game_supported_target_language_comboBox.setAccessibleDescription("Language subfolder used for output and/or previous translation lookup.")
+
+        self.__ui.need_translation_checkBox.setAccessibleName("Add machine translation")
+        self.__ui.need_translation_checkBox.setAccessibleDescription("When enabled, adds machine translation for the selected files.")
+        self.__ui.check_all_pushButton.setAccessibleName("Select all files")
+        self.__ui.check_all_pushButton.setAccessibleDescription("Select all files in the file list below.")
+        self.__ui.uncheck_all_pushButton.setAccessibleName("Unselect all files")
+        self.__ui.uncheck_all_pushButton.setAccessibleDescription("Unselect all files in the file list below.")
+        self.__ui.update_need_translation_area_pushButton.setAccessibleName("Refresh file list")
+        self.__ui.update_need_translation_area_pushButton.setAccessibleDescription("Reload the file list from the selected mod directory.")
+        self.__ui.need_translate_scrollArea.setAccessibleName("File list")
+        self.__ui.need_translate_scrollArea.setAccessibleDescription("List of mod localization files. Check files to include in machine translation.")
+
+        self.__ui.disable_original_line_checkBox.setAccessibleName("Disable original line output")
+        self.__ui.disable_original_line_checkBox.setAccessibleDescription("Advanced option related to how original lines are written when machine translation is enabled.")
+        self.__ui.run_pushButton.setAccessibleName("Start")
+        self.__ui.run_pushButton.setAccessibleDescription("Start generating the output localization files.")
+
+        self.__ui.discord_link_pushButton.setAccessibleName("Discord server")
+        self.__ui.discord_link_pushButton.setAccessibleDescription("Open the Discord server for support and bug reports.")
+        self.__ui.donate_pushButton.setAccessibleName("Donate")
+        self.__ui.donate_pushButton.setAccessibleDescription("Open the donation page to support the project.")
 
     def __init_keyboard_nav(self):
         tab_order = [
@@ -488,6 +555,9 @@ class MainWindow(QtWidgets.QMainWindow):
             check_box = QtWidgets.QCheckBox(str(file_name))
             check_box.setObjectName(str(file_name))
             check_box.setChecked(True)
+            check_box.setAccessibleName("Machine translation file")
+            check_box.setAccessibleDescription(f"Include this file in machine translation: {file_name}")
+            check_box.setToolTip(f"Include this file in machine translation: {file_name}")
             check_box.installEventFilter(self)
             self.__need_translate_checkboxes.append(check_box)
             vertical_layout.addWidget(check_box)
