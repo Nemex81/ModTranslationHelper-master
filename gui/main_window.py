@@ -10,6 +10,7 @@ from pathlib import Path
 from PyQt5.QtCore import pyqtSlot
 from loguru import logger
 
+from gui.a11y_keyboard import apply_tab_order
 from gui.stat_table_window import StatTableWindow
 from info_data import InfoData
 from settings import BASE_DIR, HOME_DIR, TRANSLATIONS_DIR, SCREEN_SIZE, PROGRAM_VERSION
@@ -91,6 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__init_available_languages()
         self.__preset_values()
         self.__check_readiness()
+        self.__init_keyboard_nav()
 
     @logger.catch()
     def __init_languages(self):
@@ -268,6 +270,37 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init_help_icons(self):
         self.__init_info_layouts()
         AddInfoIcons(self.info_layouts)
+
+    def __init_keyboard_nav(self):
+        tab_order = [
+            self.__ui.program_language_comboBox,
+            self.__ui.select_game_comboBox,
+            self.__ui.game_directory_lineEdit,
+            self.__ui.game_directory_pushButton,
+            self.__ui.game_directory_open_pushButton,
+            self.__ui.original_directory_lineEdit,
+            self.__ui.original_directory_pushButton,
+            self.__ui.original_directory_open_pushButton,
+            self.__ui.previous_directory_lineEdit,
+            self.__ui.previous_directory_pushButton,
+            self.__ui.previous_directory_open_pushButton,
+            self.__ui.target_directory_lineEdit,
+            self.__ui.target_directory_pushButton,
+            self.__ui.target_directory_open_pushButton,
+            self.__ui.selector_original_language_comboBox,
+            self.__ui.selector_target_language_comboBox,
+            self.__ui.need_translation_checkBox,
+            self.__ui.check_all_pushButton,
+            self.__ui.uncheck_all_pushButton,
+            self.__ui.update_need_translation_area_pushButton,
+            self.__ui.need_translate_scrollArea,
+            self.__ui.disable_original_line_checkBox,
+            self.__ui.run_pushButton,
+            self.__ui.discord_link_pushButton,
+            self.__ui.donate_pushButton,
+        ]
+        apply_tab_order(tab_order)
+        self.__ui.game_directory_lineEdit.setFocus()
 
     def __select_game_directory(self, *args, **kwargs):
         chosen_path = QtWidgets.QFileDialog.getExistingDirectory(caption='Get Path',
