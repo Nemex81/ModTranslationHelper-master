@@ -10,7 +10,7 @@ from pathlib import Path
 from PyQt5.QtCore import pyqtSlot
 from loguru import logger
 
-from gui.a11y_keyboard import apply_tab_order
+from gui.a11y_keyboard import add_shortcut, apply_tab_order
 from gui.stat_table_window import StatTableWindow
 from info_data import InfoData
 from settings import BASE_DIR, HOME_DIR, TRANSLATIONS_DIR, SCREEN_SIZE, PROGRAM_VERSION
@@ -49,6 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.__running_thread = None
         self.__translator: TranslatorManager
+        self.__shortcuts: list[QtWidgets.QShortcut] = []
 
         self.__ui.run_pushButton.setEnabled(False)
 
@@ -93,6 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__preset_values()
         self.__check_readiness()
         self.__init_keyboard_nav()
+        self.__init_shortcuts()
 
     @logger.catch()
     def __init_languages(self):
@@ -156,8 +158,10 @@ class MainWindow(QtWidgets.QMainWindow):
         menu = QtWidgets.QMenuBar()
         main_menu = QtWidgets.QMenu(LanguageConstants.menu, self)
         open_settings_action = QtWidgets.QAction(LanguageConstants.settings, self)
+        open_settings_action.setShortcut(QtGui.QKeySequence('Ctrl+,'))
         open_settings_action.triggered.connect(open_settings)
         main_menu.addAction(open_settings_action)
+        self.__open_settings_action = open_settings_action
 
         menu.addMenu(main_menu)
 
@@ -301,6 +305,16 @@ class MainWindow(QtWidgets.QMainWindow):
         ]
         apply_tab_order(tab_order)
         self.__ui.game_directory_lineEdit.setFocus()
+
+    def __init_shortcuts(self):
+        self.__shortcuts = [
+            add_shortcut(self, 'Ctrl+R', self.__ui.run_pushButton.click),
+            add_shortcut(self, 'Alt+G', self.__ui.game_directory_lineEdit.setFocus),
+            add_shortcut(self, 'Alt+M', self.__ui.original_directory_lineEdit.setFocus),
+            add_shortcut(self, 'Alt+P', self.__ui.previous_directory_lineEdit.setFocus),
+            add_shortcut(self, 'Alt+T', self.__ui.target_directory_lineEdit.setFocus),
+            add_shortcut(self, 'Alt+U', self.__ui.update_need_translation_area_pushButton.click),
+        ]
 
     def __select_game_directory(self, *args, **kwargs):
         chosen_path = QtWidgets.QFileDialog.getExistingDirectory(caption='Get Path',
@@ -531,12 +545,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__running_thread.exec_()
 
     # Events:
-
-    def keyPressEvent(self, button: QtGui.QKeyEvent) -> None:
-        if button.key() == QtCore.Qt.Key_R:
-            self.__ui.run_pushButton.click()
-        else:
-            super(MainWindow, self).keyPressEvent(button)
 
     def resizeEvent(self, resize_event: QtGui.QResizeEvent) -> None:
         ResizeWindow(self, resize_event.size())
