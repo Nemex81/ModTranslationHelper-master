@@ -50,6 +50,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__running_thread = None
         self.__translator: TranslatorManager
         self.__shortcuts: list[QtWidgets.QShortcut] = []
+        self.__need_translate_checkboxes: list[QtWidgets.QCheckBox] = []
+        self.__ui.need_translate_scrollArea.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.__ui.need_translate_scrollArea.installEventFilter(self)
 
         self.__ui.run_pushButton.setEnabled(False)
 
@@ -477,14 +480,33 @@ class MainWindow(QtWidgets.QMainWindow):
         files = self.__prepper.get_file_hierarchy()
         vertical_layout_widget = QtWidgets.QWidget()
         vertical_layout = QtWidgets.QVBoxLayout(vertical_layout_widget)
+        self.__need_translate_checkboxes.clear()
         for file_name in files:
             file_name: Path
             check_box = QtWidgets.QCheckBox(str(file_name))
             check_box.setObjectName(str(file_name))
             check_box.setChecked(True)
+            check_box.installEventFilter(self)
+            self.__need_translate_checkboxes.append(check_box)
             vertical_layout.addWidget(check_box)
         vertical_layout_widget.setLayout(vertical_layout)
         self.__ui.need_translate_scrollArea.setWidget(vertical_layout_widget)
+        self.__focus_first_checkbox()
+
+    def __focus_checkbox_relative(self, current_checkbox: QtWidgets.QCheckBox, step: int):
+        if not self.__need_translate_checkboxes:
+            return
+        try:
+            current_index = self.__need_translate_checkboxes.index(current_checkbox)
+        except ValueError:
+            return
+        target_index = current_index + step
+        if 0 <= target_index < len(self.__need_translate_checkboxes):
+            self.__need_translate_checkboxes[target_index].setFocus()
+
+    def __focus_first_checkbox(self):
+        if self.__need_translate_checkboxes:
+            self.__need_translate_checkboxes[0].setFocus()
 
     def __show_warning(self):
         if self.__ui.disable_original_line_checkBox.isChecked():
@@ -545,6 +567,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__running_thread.exec_()
 
     # Events:
+
+    def eventFilter(self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
+        if watched is self.__ui.need_translate_scrollArea and event.type() == QtCore.QEvent.FocusIn:
+            self.__focus_first_checkbox()
+        if isinstance(watched, QtWidgets.QCheckBox) and watched in self.__need_translate_checkboxes:
+            if event.type() == QtCore.QEvent.KeyPress:
+                if event.key() == QtCore.Qt.Key_Up:
+                    self.__focus_checkbox_relative(watched, -1)
+                    return True
+                if event.key() == QtCore.Qt.Key_Down:
+                    self.__focus_checkbox_relative(watched, 1)
+                    return True
+        return super(MainWindow, self).eventFilter(watched, event)
 
     def resizeEvent(self, resize_event: QtGui.QResizeEvent) -> None:
         ResizeWindow(self, resize_event.size())
