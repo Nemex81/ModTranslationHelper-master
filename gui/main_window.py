@@ -26,6 +26,11 @@ from utils.gui.info_utils import AddInfoIcons
 
 SETTINGS_SHORTCUT = QtGui.QKeySequence('Ctrl+,')
 
+UI_LANGUAGES = {
+    'en': {'label': 'English', 'translation_dir': 'English'},
+    'it': {'label': 'Italiano', 'translation_dir': 'Italiano'},
+}
+
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
@@ -105,13 +110,30 @@ class MainWindow(QtWidgets.QMainWindow):
     @logger.catch()
     def __init_languages(self):
         self.__translators = []
-        languages_list = ['Русский']
-        for directory in TRANSLATIONS_DIR.iterdir():
-            if directory.is_dir() and directory.name != "__pycache__":
-                languages_list.append(directory.name)
-        self.__ui.program_language_comboBox.addItems(languages_list)
-        self.__ui.program_language_comboBox.setCurrentText(self.__settings.get_app_language())
+        self.__ui.program_language_comboBox.clear()
+        for code, data in UI_LANGUAGES.items():
+            self.__ui.program_language_comboBox.addItem(data['label'], code)
+        saved_language = self.__normalize_ui_language_code(self.__settings.get_app_language())
+        index = self.__ui.program_language_comboBox.findData(saved_language)
+        self.__ui.program_language_comboBox.setCurrentIndex(index if index != -1 else 0)
         self.__change_language()
+
+    @staticmethod
+    def __normalize_ui_language_code(value):
+        if value in UI_LANGUAGES:
+            return value
+        if isinstance(value, str):
+            normalized = value.lower()
+            if normalized.startswith('it') or 'ital' in normalized:
+                return 'it'
+        return 'en'
+
+    @staticmethod
+    def __get_translation_directory(language_code: str):
+        language = UI_LANGUAGES.get(language_code)
+        if language:
+            return TRANSLATIONS_DIR / language['translation_dir']
+        return None
 
     @logger.catch()
     def __init_game(self):
@@ -241,20 +263,19 @@ class MainWindow(QtWidgets.QMainWindow):
                 app.removeTranslator(_translator)
 
         del_translators()
-        self.__settings.set_app_language(self.__ui.program_language_comboBox.currentText())
+        language_code = self.__normalize_ui_language_code(self.__ui.program_language_comboBox.currentData())
+        self.__settings.set_app_language(language_code)
 
         self.__translators.clear()
-        if self.__ui.program_language_comboBox.currentText() != 'Русский':
-            current_language = self.__ui.program_language_comboBox.currentText()
-            translation_files = [TRANSLATIONS_DIR / current_language / file for file in
-                                 (TRANSLATIONS_DIR / current_language).iterdir() if
-                                 (TRANSLATIONS_DIR / current_language).exists() and file.is_file()]
-
-            for file in translation_files:
-                translator = QtCore.QTranslator()
-                translator.load(str(file))
-                self.__translators.append(translator)
-            set_translators()
+        translation_dir = self.__get_translation_directory(language_code)
+        if translation_dir and translation_dir.exists():
+            for file in translation_dir.iterdir():
+                if file.is_file():
+                    translator = QtCore.QTranslator()
+                    translator.load(str(file))
+                    self.__translators.append(translator)
+            if self.__translators:
+                set_translators()
         self.__ui.retranslateUi(self)
         LanguageConstants.retranslate()
         SettingsWindowConstants.retranslate()

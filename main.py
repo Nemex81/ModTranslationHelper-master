@@ -192,7 +192,7 @@ class Settings:
         'translator_api': "GoogleTranslator",
         'protection_symbol': "☻",
 
-        'app_language': "Русский",
+        'app_language': "en",
         'games': {},
         'selected_game': 'Crusader Kings 3',
         'app_size': [1300, 700],
@@ -302,7 +302,14 @@ class Settings:
         return self.__settings.get('protection_symbol', None)
 
     def get_app_language(self):
-        return self.__settings.get('app_language', 0)
+        value = self.__settings.get('app_language', 'en')
+        if value in ('en', 'it'):
+            return value
+        if isinstance(value, str):
+            normalized = value.lower()
+            if normalized.startswith('it'):
+                return 'it'
+        return 'en'
 
     def get_app_size(self):
         return self.__settings.get('app_size', None)
