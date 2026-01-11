@@ -48,67 +48,61 @@ class LanguageConstants:
     @classmethod
     def retranslate(cls):
         _translate = QtCore.QCoreApplication.translate
-        cls.menu = _translate("Constants", "&Меню")
-        cls.settings = _translate("Constants", "Настройки")
-        cls.program_version = _translate("Constants", "Версия")
+        cls.menu = _translate("Constants", "&Menu")
+        cls.settings = _translate("Constants", "Settings")
+        cls.program_version = _translate("Constants", "Version")
 
         cls.game_directory_help = _translate("Constants",
-                                             "Место, где установлена игра, для которой вы собираетесь переводить. Путь должен вести к папке с локализацией (там где находятся папки english, russian, french и т.д.) Стандартный путь для Crusader Kings 3: \n../Steam/steamapps/common/Crusader Kings III/game/localization")
+                                             "Location of the game you want to translate. The path must point to the localization folder (where the english, russian, french, etc. folders are). Default path for Crusader Kings 3:\n../Steam/steamapps/common/Crusader Kings III/game/localization")
         cls.original_directory_help = _translate("Constants",
-                                                 "Папка, где хранится локализация мода, на который вы хотите создать перевод. Пример: ../Steam/steamapps/workshop/content/1158310/2507209632/localization")
+                                                 "Folder that contains the mod localization you want to translate. Example: ../Steam/steamapps/workshop/content/1158310/2507209632/localization")
         cls.previous_directory_help = _translate("Constants",
-                                                 "Если происходит обновление перевода и у вас уже есть готовый перевод предыдущей версии, то стоит указать директорию с предыдущей версией перевода.Программа сама пробежится\n"
-                                                 "по старым файлам и использует строки, которые там найдет для построения новой версии. При этом все новые строки будут обработаны в обычном режиме и помечены комментарием #NT!")
+                                                 "If you are updating a translation and already have the previous version, specify the previous translation directory. The program will scan the old files and reuse the strings it finds to build the new version. All new strings will be processed normally and marked with the #NT! comment.")
         cls.target_directory_help = _translate("Constants",
-                                               "Папка, в которую будут помещены все файлы, созданные в результате работы программы.\n"
-                                               "(Точная копия оригинальной локализации по структуре папок и файлов, но с заменой данных о языке и с машинным переводом(если отмечен ниже).\n"
-                                               "Пример: Если выбран english, как исходный язык, а russian, как целевой, все l_english будут заменены на l_russian, а машинный перевод будет на русский язык)")
-        cls.need_translation_help = _translate("Constants", "При включении данной функции будет совершена попытка перевести все строки локализации на целевой язык, при этом перевод будет записан рядом с оригинальной строкой,\n"
-                                                            "что подразумевает последующие правки текста, который может быть далек по смыслу от оригинала из-за неточности машинного перевода")
-        cls.disable_original_line_help = _translate("Constants", "Отключает вывод оригинальной строки, оставляет только машинный перевод.\n"
-                                                                 "Включать, только если вы отдаете себе отчет о последствиях!")
-        cls.choice_supported_source_language_help = _translate("Constants", "Поддерживаемый игрой язык - выбор исходного языка, который поддерживается игрой. Здесь указывается название языка папок и файлов,\n"
-                                                                            "в которых хранится оригинальная локализация, требующая перевода.\n"
-                                                                            "Язык оригинала - выбор исходного языка текста. Здесь указывается язык, на котором написан текст в указанных файлах.\n"
-                                                                            "Справка: Если игра не поддерживает, русский язык, то при переводе русский текст записывается в файлы для английской версии,\n"
-                                                                            "поэтому в файлах типо *_l_english может находиться русская локализация")
-        cls.choice_supported_target_language_help = _translate("Constants", "Поддерживаемый игрой язык - выбор целевого языка, который поддерживается игрой. Здесь указывается название языка папок и файлов,\n"
-                                                                            "в которых хранится предыдущая версия локализации и в которые вы хотите поместить созданный перевод.\n"
-                                                                            "Язык оригинала - выбор целевого языка, поддерживаемого игрой. Здесь указывается язык, на который вы хотите перевести текст.\n"
-                                                                            "Справка: Если игра не поддерживает, какай-либо язык официально, то локализацию на этот язык можно запускать через английскую версию игры,\n"
-                                                                            "если при этом в файлах с названием english лежит локализация нужного языка")
+                                                "Folder where all files created by the program will be placed.\n"
+                                                "(An exact copy of the original localization structure, but with language replacements and optional machine translation.)\n"
+                                                "Example: if english is the source language and russian is the target, all l_english entries will be replaced with l_russian and the machine translation will be in Russian.")
+        cls.need_translation_help = _translate("Constants", "When enabled, the program tries to translate all localization strings into the target language, writing the translation next to the original line. Manual review is required because machine translation may be inaccurate.")
+        cls.disable_original_line_help = _translate("Constants", "Disables output of the original line, leaving only the machine translation.\n"
+                                                                 "Enable only if you understand the consequences!")
+        cls.choice_supported_source_language_help = _translate("Constants", "Game-supported language: choose the source language that the game supports. This is the folder/file language name where the original localization is stored.\n"
+                                                                             "Original language: choose the language in which the text is written in those files.\n"
+                                                                             "Note: if the game does not support Russian, Russian text may be stored in files for the English version (e.g., *_l_english can contain Russian text).")
+        cls.choice_supported_target_language_help = _translate("Constants", "Game-supported language: choose the target language supported by the game. This is the folder/file name where the previous translation is stored and where you want to place the generated translation.\n"
+                                                                             "Original language: choose the target language you want to translate the text into.\n"
+                                                                             "Note: if the game does not officially support a language, you can still use it through the English version if the localization is placed inside the english folders.")
 
-        cls.start_forming_hierarchy = _translate("Constants", "Начато формирование иерархии директорий -")
-        cls.start_file_processing = _translate("Constants", "Начата обработка файлов")
-        cls.file_opened = _translate("Constants", "Начата работа с файлом")
-        cls.forming_process = _translate("Constants", "Формирую иерархию\nдиректорий")
-        cls.error_with_data_processing = _translate("Constants", "Произошла ошибка")
-        cls.folder_created = _translate("Constants", "Создана папка")
-        cls.error_with_folder_creating = _translate("Constants", "Произошла ошибка при попытке создания директории")
-        cls.error_with_file_processing = _translate("Constants", "Произошла ошибка при обработке файла")
-        cls.error_with_modification = _translate("Constants", "Ошибка при модификации, флаг нечитаем")
-        cls.error_with_translation = _translate("Constants", "Произошла ошибка с переводом строки:")
-        cls.error_quota_exceeded = _translate("Constants", "Превышены ограничения вашего тарифа на перевод!")
-        cls.api_service_changed = _translate("Constants", "Сервис перевода сменен на ")
-        cls.thread_stopped = _translate("Constants", "Поток обработки остановлен")
-        cls.localization_dict_creating_started = _translate("Constants", "Начато создание словаря игровой локализации")
-        cls.game_localization_processing = _translate("Constants", "Обработка игровой локализации")
-        cls.of_file = _translate("Constants", "файла")
+        cls.start_forming_hierarchy = _translate("Constants", "Directory hierarchy creation started -")
+        cls.start_file_processing = _translate("Constants", "File processing started")
+        cls.file_opened = _translate("Constants", "Started working with file")
+        cls.forming_process = _translate("Constants", "Building directory hierarchy")
+        cls.error_with_data_processing = _translate("Constants", "An error occurred")
+        cls.folder_created = _translate("Constants", "Folder created")
+        cls.error_with_folder_creating = _translate("Constants", "Error while creating directory")
+        cls.error_with_file_processing = _translate("Constants", "Error while processing file")
+        cls.error_with_modification = _translate("Constants", "Error during modification, unknown flag")
+        cls.error_with_translation = _translate("Constants", "Error translating line:")
+        cls.error_quota_exceeded = _translate("Constants", "Your translation quota was exceeded!")
+        cls.api_service_changed = _translate("Constants", "Translation service changed to ")
+        cls.thread_stopped = _translate("Constants", "Processing thread stopped")
+        cls.localization_dict_creating_started = _translate("Constants", "Started creating game localization dictionary")
+        cls.game_localization_processing = _translate("Constants", "Processing game localization")
+        cls.of_file = _translate("Constants", "of file")
         cls.previous_localization_dict_creating_started = _translate("Constants",
-                                                                     "Начато создание словаря предыдущей локализации")
-        cls.previous_localization_processing = _translate("Constants", "Обработка предыдущей локализации")
-        cls.process_string = _translate("Constants", "Обработка строки")
-        cls.final = _translate("Constants", "Обработка данных закончена")
-        cls.final_time = _translate("Constants", "Программа закончила свою работу за")
+                                                                     "Started creating previous localization dictionary")
+        cls.previous_localization_processing = _translate("Constants", "Processing previous localization")
+        cls.process_string = _translate("Constants", "Processing line")
+        cls.final = _translate("Constants", "Data processing finished")
+        cls.final_time = _translate("Constants", "Program finished in")
 
-        cls.error_settings_file_not_exist = _translate("Constants", "Место хранения настроек - не найдено")
-        cls.error_folder_does_not_exist = _translate("Constants", "Директория не существует")
-        cls.error_drive_not_exist = _translate("Constants", "Выбранный диск не существует")
-        cls.error_path_not_exists = _translate("Constants", "Невозможно открыть")
+        cls.error_settings_file_not_exist = _translate("Constants", "Settings storage not found")
+        cls.error_folder_does_not_exist = _translate("Constants", "Directory does not exist")
+        cls.error_drive_not_exist = _translate("Constants", "Selected drive does not exist")
+        cls.error_path_not_exists = _translate("Constants", "Unable to open")
 
         cls.warning_disable_original_line = _translate("Constants",
-                                                       "Внимание!\nАвтор программы считает, что при включении данной функции сильно пострадает качество перевода. Включайте на свой страх и риск. После работы программы вы получите полностью машинный перевод с огромным количеством ошибок! Проверяйте перевод перед его публикацией где-либо!")
-        cls.warning_disable_original_line_title = _translate("Constants", "Предупреждение")
+                                                       "Attention!\nThe author believes enabling this option will significantly reduce translation quality. Enable at your own risk. After running the program you will get fully machine-translated text with many errors! Review the translation before publishing it anywhere!")
+        cls.warning_disable_original_line_title = _translate("Constants", "Warning")
 
 
 class SettingsWindowConstants:
@@ -119,9 +113,8 @@ class SettingsWindowConstants:
     def retranslate(cls):
         _translate = QtCore.QCoreApplication.translate
 
-        cls.protection_symbol_help = _translate("SettingsWindow", "Внимание!!! Не меняйте эту настройку, если не уверены в том, как это работает\n"
-                                                             "Данный символ используется для подмены значений, которые по тем или иным причинам\n"
-                                                             "могут быть испорчены переводчиком и не должны быть отправлены вместе с основным текстом")
+        cls.protection_symbol_help = _translate("SettingsWindow", "Warning! Do not change this setting unless you know how it works.\n"
+                                                             "This symbol is used to replace values that could be corrupted by the translator and should not be sent with the main text.")
 
 
 class StatWindowConstants:
@@ -150,24 +143,22 @@ class StatWindowConstants:
     @classmethod
     def retranslate(cls):
         _translate = QtCore.QCoreApplication.translate
-        cls.open_file = _translate("StatWindow", "Открыть файл")
-        cls.open_statements_directory = _translate("StatWindow", "Открыть директорию с отчетами")
-        cls.used_service_apis = _translate("StatWindow", "Использованные сервисы перевода")
-        cls.lines_in_file_len = _translate("StatWindow", "Количество строк в файле")
-        cls.new_lines = _translate("StatWindow", "Новые строки")
-        cls.translated_lines = _translate("StatWindow", "Список переведенных строк")
-        cls.lines_from_vanilla = _translate("StatWindow", "Список строк из ваниллы")
-        cls.lines_from_previous_version = _translate("StatWindow", "Список строк из предыдущей версии перевода")
-        cls.lines_with_errors = _translate("StatWindow", "Ошибки перевода в строках")
-        cls.time_of_process = _translate("StatWindow", "Время выполнения")
+        cls.open_file = _translate("StatWindow", "Open file")
+        cls.open_statements_directory = _translate("StatWindow", "Open statistics folder")
+        cls.used_service_apis = _translate("StatWindow", "Used translation services")
+        cls.lines_in_file_len = _translate("StatWindow", "Number of lines in file")
+        cls.new_lines = _translate("StatWindow", "New lines")
+        cls.translated_lines = _translate("StatWindow", "Translated lines")
+        cls.lines_from_vanilla = _translate("StatWindow", "Lines from vanilla")
+        cls.lines_from_previous_version = _translate("StatWindow", "Lines from previous translation")
+        cls.lines_with_errors = _translate("StatWindow", "Translation errors in lines")
+        cls.time_of_process = _translate("StatWindow", "Processing time")
 
-        cls.translated_files = _translate("StatWindow", "Переведено файлов")
-        cls.translated_chars = _translate("StatWindow", "Переведено символов")
+        cls.translated_files = _translate("StatWindow", "Files translated")
+        cls.translated_chars = _translate("StatWindow", "Characters translated")
 
-        cls.name_column_param = _translate("StatWindow", "Показатель")
-        cls.name_column_value = _translate("StatWindow", "Значение")
-        cls.save_csv_pushButton = _translate("StatWindow", "Сохранить статистику в csv-файл")
-        cls.open_statements_directory = _translate("StatWindow", "Открыть папку со статистикой")
-        cls.close_pushButton = _translate("StatWindow", "Закрыть")
-
-
+        cls.name_column_param = _translate("StatWindow", "Metric")
+        cls.name_column_value = _translate("StatWindow", "Value")
+        cls.save_csv_pushButton = _translate("StatWindow", "Save statistics to CSV file")
+        cls.open_statements_directory = _translate("StatWindow", "Open statistics folder")
+        cls.close_pushButton = _translate("StatWindow", "Close")
