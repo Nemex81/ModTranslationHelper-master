@@ -307,7 +307,7 @@ class Settings:
             return value
         if isinstance(value, str):
             normalized = value.lower()
-            if normalized.startswith('it'):
+            if normalized.startswith('it') or 'ital' in normalized:
                 return 'it'
         return 'en'
 
