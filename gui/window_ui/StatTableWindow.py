@@ -58,7 +58,7 @@ class Ui_StatTable(object):
 
     def retranslateUi(self, StatTable):
         _translate = QtCore.QCoreApplication.translate
-        StatTable.setWindowTitle(_translate("StatTable", "Статистика"))
-        self.save_csv_pushButton.setText(_translate("StatTable", "Сохранить CSV файл"))
-        self.open_statements_pushButton.setText(_translate("StatTable", "Открыть папку с отчетами"))
-        self.close_pushButton.setText(_translate("StatTable", "Закрыть"))
+        StatTable.setWindowTitle(_translate("StatTable", "Statistics"))
+        self.save_csv_pushButton.setText(_translate("StatTable", "Save CSV file"))
+        self.open_statements_pushButton.setText(_translate("StatTable", "Open reports folder"))
+        self.close_pushButton.setText(_translate("StatTable", "Close"))

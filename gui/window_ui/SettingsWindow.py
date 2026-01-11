@@ -67,7 +67,7 @@ class Ui_Settings(object):
 
     def retranslateUi(self, Settings):
         _translate = QtCore.QCoreApplication.translate
-        Settings.setWindowTitle(_translate("Settings", "Настройки"))
-        self.save_settings_pushButton.setText(_translate("Settings", "Сохранить"))
-        self.apis_label.setText(_translate("Settings", "Сервис перевода"))
-        self.protection_symbol_label.setText(_translate("Settings", "Символ для протекции"))
+        Settings.setWindowTitle(_translate("Settings", "Settings"))
+        self.save_settings_pushButton.setText(_translate("Settings", "Save"))
+        self.apis_label.setText(_translate("Settings", "Translation service"))
+        self.protection_symbol_label.setText(_translate("Settings", "Protection symbol"))
