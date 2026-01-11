@@ -18,6 +18,8 @@ class CustomDialog(QtWidgets.QDialog):
         self.setWindowIcon(QtGui.QIcon(icon_path))
 
         self.__ui.no_path_error_textBrowser.setText(text)
+        self.__ui.no_path_error_textBrowser.setAccessibleName("Error message")
+        self.__ui.no_path_error_textBrowser.setAccessibleDescription("Shows details about an error, such as an invalid or missing path.")
 
     @logger.catch()
     def show_path_error(self):
