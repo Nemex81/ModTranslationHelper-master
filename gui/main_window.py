@@ -24,6 +24,8 @@ import ctypes
 from translators.translator_manager import TranslatorManager
 from utils.gui.info_utils import AddInfoIcons
 
+SETTINGS_SHORTCUT = QtGui.QKeySequence('Ctrl+,')
+
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
@@ -161,10 +163,9 @@ class MainWindow(QtWidgets.QMainWindow):
         menu = QtWidgets.QMenuBar()
         main_menu = QtWidgets.QMenu(LanguageConstants.menu, self)
         open_settings_action = QtWidgets.QAction(LanguageConstants.settings, self)
-        open_settings_action.setShortcut(QtGui.QKeySequence('Ctrl+,'))
+        open_settings_action.setShortcut(SETTINGS_SHORTCUT)
         open_settings_action.triggered.connect(open_settings)
         main_menu.addAction(open_settings_action)
-        self.__open_settings_action = open_settings_action
 
         menu.addMenu(main_menu)
 
@@ -311,12 +312,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init_shortcuts(self):
         self.__shortcuts = [
-            add_shortcut(self, 'Ctrl+R', self.__ui.run_pushButton.click),
-            add_shortcut(self, 'Alt+G', self.__ui.game_directory_lineEdit.setFocus),
-            add_shortcut(self, 'Alt+M', self.__ui.original_directory_lineEdit.setFocus),
-            add_shortcut(self, 'Alt+P', self.__ui.previous_directory_lineEdit.setFocus),
-            add_shortcut(self, 'Alt+T', self.__ui.target_directory_lineEdit.setFocus),
-            add_shortcut(self, 'Alt+U', self.__ui.update_need_translation_area_pushButton.click),
+            add_shortcut(self, 'Ctrl+R', self.__ui.run_pushButton.click, context=QtCore.Qt.ApplicationShortcut),
+            add_shortcut(self, 'Alt+G', self.__ui.game_directory_lineEdit.setFocus, context=QtCore.Qt.ApplicationShortcut),
+            add_shortcut(self, 'Alt+M', self.__ui.original_directory_lineEdit.setFocus, context=QtCore.Qt.ApplicationShortcut),
+            add_shortcut(self, 'Alt+P', self.__ui.previous_directory_lineEdit.setFocus, context=QtCore.Qt.ApplicationShortcut),
+            add_shortcut(self, 'Alt+T', self.__ui.target_directory_lineEdit.setFocus, context=QtCore.Qt.ApplicationShortcut),
+            add_shortcut(self, 'Alt+U', self.__ui.update_need_translation_area_pushButton.click,
+                        context=QtCore.Qt.ApplicationShortcut),
         ]
 
     def __select_game_directory(self, *args, **kwargs):

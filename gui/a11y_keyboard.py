@@ -31,7 +31,7 @@ def set_focus_policies(focus: list[QtWidgets.QWidget], no_focus: list[QtWidgets.
 
 
 def add_shortcut(parent: QtWidgets.QWidget, key: QtGui.QKeySequence | str, callback: Callable,
-                context: QtCore.Qt.ShortcutContext = QtCore.Qt.ApplicationShortcut) -> QtWidgets.QShortcut:
+                context: QtCore.Qt.ShortcutContext = QtCore.Qt.WidgetWithChildrenShortcut) -> QtWidgets.QShortcut:
     """Create a shortcut with a consistent context and return it."""
     sequence = key if isinstance(key, QtGui.QKeySequence) else QtGui.QKeySequence(key)
     shortcut = QtWidgets.QShortcut(sequence, parent)
