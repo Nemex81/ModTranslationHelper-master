@@ -1,6 +1,7 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from loguru import logger
 
+from gui.a11y_keyboard import add_shortcut, apply_tab_order, set_focus_policies
 from gui.add_account_data_window import AddAccountDataWindow
 from languages.language_constants import SettingsWindowConstants
 from main import Settings, TranslatorAccount
@@ -15,11 +16,14 @@ class SettingsWindow(QtWidgets.QDialog):
         super(SettingsWindow, self).__init__(parent)
         self.__ui = Ui_Settings()
         self.__ui.setupUi(self)
+        self.__shortcuts: list[QtWidgets.QShortcut] = []
 
         self.__settings = settings
         self.__account_data = account_data
         self.__init_icons()
         self.__set_initial_values()
+        self.__init_keyboard_nav()
+        self.__init_shortcuts()
 
         self.__ui.apis_comboBox.currentTextChanged.connect(self.__change_current_api)
         self.__ui.save_settings_pushButton.clicked.connect(self.save_settings)
@@ -33,6 +37,26 @@ class SettingsWindow(QtWidgets.QDialog):
     def __init_icons(self):
         self.__init_info_layouts()
         AddInfoIcons(self.__info_layouts)
+
+    def __init_keyboard_nav(self):
+        focus_widgets = [
+            self.__ui.apis_comboBox,
+            self.__ui.protection_symbol_lineEdit,
+            self.__ui.save_settings_pushButton,
+        ]
+        no_focus_widgets = [
+            self.__ui.apis_label,
+            self.__ui.protection_symbol_label,
+        ]
+        set_focus_policies(focus_widgets, no_focus_widgets)
+        apply_tab_order(focus_widgets)
+        self.__ui.apis_comboBox.setFocus()
+
+    def __init_shortcuts(self):
+        self.__shortcuts = [
+            add_shortcut(self, 'Esc', self.close, context=QtCore.Qt.WidgetWithChildrenShortcut),
+            add_shortcut(self, 'Ctrl+S', self.save_settings, context=QtCore.Qt.WidgetWithChildrenShortcut),
+        ]
 
     @logger.catch()
     def __set_initial_values(self):

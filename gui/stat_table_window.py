@@ -6,11 +6,12 @@ from collections.abc import Iterable
 
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QAbstractItemView
+from PyQt5 import QtCore, QtWidgets
 
 import settings
+from gui.a11y_keyboard import add_shortcut, apply_tab_order, set_focus_policies
 from gui.window_ui.BaseTable import Ui_table_for_stat
 from gui.window_ui.StatTableWindow import Ui_StatTable
-from PyQt5 import QtWidgets
 
 from info_data import InfoData
 from languages.language_constants import StatWindowConstants
@@ -21,6 +22,7 @@ class BaseTable(QtWidgets.QWidget):
         super(BaseTable, self).__init__(parent=parent)
         self.__ui = Ui_table_for_stat()
         self.__ui.setupUi(self)
+        set_focus_policies(focus=[], no_focus=[self.__ui.tableView, self.__ui.link_pushButton, self.__ui.title_label])
 
         self.__ui.link_pushButton.setText(StatWindowConstants.open_file)
 
@@ -66,10 +68,12 @@ class StatTableWindow(QtWidgets.QDialog):
         super(StatTableWindow, self).__init__(parent=parent)
         self.__ui = Ui_StatTable()
         self.__ui.setupUi(self)
+        self.__shortcuts: list[QtWidgets.QShortcut] = []
         if parent:
             self.resize(parent.size() * 0.75)
         self.csv_directory = None
         self.check_statements_directory()
+        self.__ui.scrollArea.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self.__ui.save_csv_pushButton.clicked.connect(self.save_csv)
         self.__ui.open_statements_pushButton.clicked.connect(self.open_statements_directory)
@@ -85,11 +89,28 @@ class StatTableWindow(QtWidgets.QDialog):
         general_table = BaseTable(parent=self, data=self.data.get_data_for_general(), general=True)
         self.vertical_layout.addWidget(general_table)
         self.create_file_tables()
+        self.__init_keyboard_nav()
+        self.__init_shortcuts()
 
     def create_file_tables(self):
         for file in self.data.files_info.values():
             file_table = BaseTable(parent=self, data=file.get_file_data())
             self.vertical_layout.addWidget(file_table)
+
+    def __init_keyboard_nav(self):
+        focus_widgets = [
+            self.__ui.save_csv_pushButton,
+            self.__ui.open_statements_pushButton,
+            self.__ui.close_pushButton,
+        ]
+        set_focus_policies(focus_widgets, [self.__ui.scrollArea])
+        apply_tab_order(focus_widgets)
+        self.__ui.save_csv_pushButton.setFocus()
+
+    def __init_shortcuts(self):
+        self.__shortcuts = [
+            add_shortcut(self, 'Esc', self.close, context=QtCore.Qt.WidgetWithChildrenShortcut),
+        ]
 
     def check_statements_directory(self):
         base_mth_directory = settings.HOME_DIR / 'Documents' / 'ModTranslationHelper'
