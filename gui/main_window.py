@@ -608,6 +608,7 @@ class MainWindow(QtWidgets.QMainWindow):
             check_box = QtWidgets.QCheckBox(str(file_name))
             check_box.setObjectName(str(file_name))
             check_box.setChecked(True)
+            check_box.setFocusPolicy(QtCore.Qt.ClickFocus)
             check_box.setAccessibleName("Machine translation file")
             check_box.setAccessibleDescription(f"Include this file in machine translation: {file_name}")
             check_box.setToolTip(f"Include this file in machine translation: {file_name}")
@@ -695,9 +696,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def eventFilter(self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
         if watched is self.__ui.need_translate_scrollArea and event.type() == QtCore.QEvent.FocusIn:
-            self.__focus_first_checkbox()
+            if self.__need_translate_checkboxes:
+                self.__focus_first_checkbox()
+            else:
+                self.focusNextChild()
+                return True
         if isinstance(watched, QtWidgets.QCheckBox) and watched in self.__need_translate_checkboxes:
             if event.type() == QtCore.QEvent.KeyPress:
+                if event.key() == QtCore.Qt.Key_Tab:
+                    self.focusNextChild()
+                    return True
+                if event.key() == QtCore.Qt.Key_Backtab:
+                    self.focusPreviousChild()
+                    return True
                 if event.key() == QtCore.Qt.Key_Up:
                     self.__focus_checkbox_relative(watched, -1)
                     return True
