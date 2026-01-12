@@ -144,7 +144,7 @@ class StatWindowConstants:
     def retranslate(cls):
         _translate = QtCore.QCoreApplication.translate
         cls.open_file = _translate("StatWindow", "Open file")
-        cls.open_statements_directory = _translate("StatWindow", "Open statistics folder")
+        cls.open_statements_directory = _translate("StatWindow", "Statistics folder")
         cls.used_service_apis = _translate("StatWindow", "Used translation services")
         cls.lines_in_file_len = _translate("StatWindow", "Number of lines in file")
         cls.new_lines = _translate("StatWindow", "New lines")
@@ -160,5 +160,5 @@ class StatWindowConstants:
         cls.name_column_param = _translate("StatWindow", "Metric")
         cls.name_column_value = _translate("StatWindow", "Value")
         cls.save_csv_pushButton = _translate("StatWindow", "Save statistics to CSV file")
-        cls.open_statements_directory = _translate("StatWindow", "Open statistics folder")
+        cls.open_statements_pushButton = _translate("StatWindow", "Open reports folder")
         cls.close_pushButton = _translate("StatWindow", "Close")
